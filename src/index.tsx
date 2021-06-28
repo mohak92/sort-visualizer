@@ -8,9 +8,11 @@ import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './components/ThemeContext/ThemeContext';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </Provider>,
   document.getElementById('root')
 );
 
