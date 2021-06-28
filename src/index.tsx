@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './Store'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import ThemeProvider from './components/ThemeContext/ThemeContext';
 
 ReactDOM.render(
   <React.StrictMode>
