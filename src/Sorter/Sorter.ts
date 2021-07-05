@@ -36,4 +36,27 @@ export default class Sorter {
       [arrayCopy[indexMin], arrayCopy[i]] = [arrayCopy[i], arrayCopy[indexMin]];
     }
   }
+
+  *insertionSort(
+    left: number = 0,
+    right: number = this.arr.length
+  ): IterableIterator<IAction> {
+    let arrayCopy = [...this.arr];
+    for (let i = left + 1; i < right; i++) {
+      const x = arrayCopy[i].value;
+      let j = i;
+      yield { type: "comparison", first: j - 1, second: i };
+      while (j > left && arrayCopy[j - 1].value > x) {
+        yield { type: "changeValue", index: j, value: arrayCopy[j - 1].value };
+        arrayCopy[j].value = arrayCopy[j - 1].value;
+        j--;
+        // yield compare if next is a comparison
+        if (j > left) {
+          yield { type: "comparison", first: j - 1, second: i };
+        }
+      }
+      yield { type: "changeValue", index: j, value: x };
+      arrayCopy[j].value = x;
+    }
+  }
 }
