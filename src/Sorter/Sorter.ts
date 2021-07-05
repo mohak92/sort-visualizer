@@ -174,4 +174,37 @@ export default class Sorter {
     }
     return result;
   }
+
+  radixSort(arr: Array<number>): void {
+    const _countingSort = (arr: Array<number>, digit: number): void => {
+      const n = arr.length;
+      let output = new Array(n).fill(0);
+      let count = new Array(10).fill(0);
+      for (let i = 0; i < n; i++) {
+        const index = arr[i] / digit;
+        count[index % 10] += 1;
+      }
+      for (let j = 1; j < 10; j++) {
+        count[j] += count[j - 1];
+      }
+      let i = n - 1;
+      while (i >= 0) {
+        const index = arr[i] / digit;
+        output[count[index % 10] - 1] = arr[i];
+        count[index % 10] -= 1;
+        i -= 1;
+      }
+      i = 0;
+      for (i = 0; i < n; i++) {
+        arr[i] = output[i];
+      }
+    };
+
+    const maxArr = Math.max(...arr);
+    let digit = 1;
+    while (Math.floor(maxArr / digit) > 0) {
+      _countingSort(arr, digit);
+      digit *= 10;
+    }
+  }
 }
