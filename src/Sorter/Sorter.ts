@@ -207,4 +207,60 @@ export default class Sorter {
       digit *= 10;
     }
   }
+
+  *timSort(RUN: number = 32): IterableIterator<IAction> {
+    function* _merge(
+      arr: Array<IBar>,
+      left: number,
+      mid: number,
+      right: number
+    ): IterableIterator<IAction> {
+      let start2 = mid + 1;
+
+      if (arr[mid].value <= arr[start2].value) {
+        return;
+      }
+
+      while (left <= mid && start2 <= right) {
+        // If element 1 is in right place
+        yield { type: "comparison", first: left, second: start2 };
+        if (arr[left].value <= arr[start2].value) {
+          left++;
+        } else {
+          const value = arr[start2].value;
+          let index = start2;
+
+          // Shift all the elements between element 1
+          // element 2, right by 1.
+          while (index !== left) {
+            yield { type: "changeValue", index, value: arr[index - 1].value };
+            arr[index].value = arr[index - 1].value;
+            index--;
+          }
+          yield { type: "changeValue", index: left, value };
+          arr[left].value = value;
+
+          // Update all the pointers
+          left++;
+          mid++;
+          start2++;
+        }
+      }
+    }
+
+    const arr = [...this.arr];
+    const n = arr.length;
+    for (let i = 0; i < n; i += RUN) {
+      yield* this.insertionSort(i, Math.min(i + RUN + 1, n));
+    }
+    let size = RUN;
+    while (size < n) {
+      for (let left = 0; left < n; left += 2 * size) {
+        const mid = left + size - 1;
+        const right = Math.min(n - 1, left + 2 * size - 1);
+        yield* _merge(arr, left, mid, right);
+      }
+      size *= 2;
+    }
+  }
 }
