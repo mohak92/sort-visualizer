@@ -20,4 +20,20 @@ export default class Sorter {
       }
     }
   }
+
+  *selectionSort(): IterableIterator<IAction> {
+    let n = this.arr.length;
+    let arrayCopy = [...this.arr];
+    for (let i = 0; i < n; i++) {
+      let indexMin = i;
+      for (let j = i + 1; j < n; j++) {
+        yield { type: "comparison", first: indexMin, second: j };
+        if (arrayCopy[j].value < arrayCopy[indexMin].value) {
+          indexMin = j;
+        }
+      }
+      yield { type: "swap", first: indexMin, second: i };
+      [arrayCopy[indexMin], arrayCopy[i]] = [arrayCopy[i], arrayCopy[indexMin]];
+    }
+  }
 }
