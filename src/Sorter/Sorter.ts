@@ -263,4 +263,62 @@ export default class Sorter {
       size *= 2;
     }
   }
+
+  *heapSort(): IterableIterator<IAction> {
+    interface heapArray {
+      values: Array<IBar>;
+      heapSize: number;
+    }
+    const _right = (i: number): number => 2 * i + 2;
+    const _left = (i: number): number => 2 * i + 1;
+    function* _maxHeapify(
+      arr: heapArray,
+      i: number
+    ): IterableIterator<IAction> {
+      const l = _left(i);
+      const r = _right(i);
+      let largest = i;
+      if (l < arr.heapSize) {
+        yield { type: "comparison", first: l, second: i };
+        if (arr.values[l].value > arr.values[i].value) {
+          largest = l;
+        }
+      }
+      if (r < arr.heapSize) {
+        yield { type: "comparison", first: r, second: largest };
+        if (arr.values[r].value > arr.values[largest].value) {
+          largest = r;
+        }
+      }
+      if (largest !== i) {
+        yield { type: "swap", first: i, second: largest };
+        [arr.values[i], arr.values[largest]] = [
+          arr.values[largest],
+          arr.values[i]
+        ];
+        yield* _maxHeapify(arr, largest);
+      }
+    }
+    function* _buildMaxHeap(arr: heapArray): IterableIterator<IAction> {
+      arr.heapSize = arr.values.length;
+      for (let i = Math.floor(arr.values.length / 2); i >= 0; i--) {
+        yield* _maxHeapify(arr, i);
+      }
+    }
+    function* _heapSort(arr: heapArray): IterableIterator<IAction> {
+      yield* _buildMaxHeap(arr);
+      for (let i = arr.values.length - 1; i > 0; i--) {
+        yield { type: "swap", first: 0, second: i };
+        [arr.values[0], arr.values[i]] = [arr.values[i], arr.values[0]];
+        arr.heapSize -= 1;
+        yield* _maxHeapify(arr, 0);
+      }
+    }
+    const arr = [...this.arr];
+    const heapArr: heapArray = {
+      values: arr,
+      heapSize: 0
+    };
+    yield* _heapSort(heapArr);
+  }
 }
