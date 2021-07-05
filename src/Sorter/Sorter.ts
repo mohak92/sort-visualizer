@@ -146,4 +146,32 @@ export default class Sorter {
     const arr = [...this.arr];
     yield* _quickSort(arr);
   }
+
+  countingSort(): Array<number> {
+    const arr = [...this.arr];
+    const n = arr.length;
+    const maxRange = Math.max(...arr.map(v => v.value));
+    // grouping values by counts
+    let countArr = new Array(maxRange + 1).fill(0);
+    for (let i = 0; i < n; i++) {
+      countArr[arr[i].value] += 1;
+    }
+    // cumulative sum in counts
+    for (let j = 1; j < countArr.length; j++) {
+      countArr[j] += countArr[j - 1];
+    }
+    // displacing elements to the right
+    for (let k = countArr.length - 1; k > 0; k--) {
+      countArr[k] = countArr[k - 1];
+    }
+    countArr[0] = 0;
+    let result = new Array(n);
+    for (let i = 0; i < n; i++) {
+      const toPlace = arr[i].value;
+      const placeIndex = countArr[toPlace];
+      result[placeIndex] = toPlace;
+      countArr[toPlace]++;
+    }
+    return result;
+  }
 }
