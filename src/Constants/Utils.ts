@@ -8,13 +8,11 @@ const shuffle = (array: Array<any>): void => {
   }
 };
 
-export const interpolateSpeed = (speed: string) => {
+export const interpolateSpeed = (speed: string) => 
   Math.floor((parseInt(speed) / 100) * (0 - 3000) + 3000);
-};
 
-export const sleep = async (ms: number): Promise<any> => {
+export const sleep = async (ms: number): Promise<any> =>
   new Promise((r) => setTimeout(r, ms));
-};
 
 export const generateArrayFromOptions = (
   length: string,
