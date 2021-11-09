@@ -36,7 +36,6 @@ const Container = styled.div<IBarContainerProps>`
   border: 1px solid var(--background);
 `;
 
-// comment
 interface IBarContainerProps {
     height: string;
     total: number;
